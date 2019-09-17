@@ -5,7 +5,7 @@ var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 var ObjectId = require('mongodb').ObjectId;
-var nodemailer = require('nodemailer');
+
 var cookieParser = require('cookie-parser');
 var {Auction} = require('./Auction');
 var {Farmer} = require('./Farmer');
@@ -446,6 +446,6 @@ res.clearCookie('vendor_user_name');
 
 
 
-app.listen(3000,()=>{
+app.listen(port,()=>{
 console.log("server is on at port 3000");
 })
