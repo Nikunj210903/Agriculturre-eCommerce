@@ -1,0 +1,48 @@
+
+
+
+  
+
+
+
+
+<html>
+<head>
+<title>Response</title>
+</head>
+<body style="background-color:grey;">
+<script src="jquery-3.1.0.min.js"></script>
+   <script src="mustache.js"></script>
+   <script>
+   
+  
+console.log(data);
+   $(document).ready(function(){
+   
+     var template = jQuery('#query-template').html();
+     var html = Mustache.render(template, {
+       name:'nikunj'
+     });
+    jQuery('#query_datas').append(html);
+});   
+   </script>
+<div style="margin-top:300px;">
+<div>
+    <ul id="query_datas" style="list-style-type:none;"></ul>
+</div>
+</div>
+
+  <script id="query-template" type="text/template">
+    <li>
+      <div>
+        <h2><p align="center" >{{name}}</p></h2>
+      </div>
+    </li>
+  </script>
+
+
+{{data}}
+  
+   
+</body>
+</html>

@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>AdminLTE 2 | Dashboard</title>
+  <!-- Tell the browser to be responsive to screen width -->
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+  <!-- Bootstrap 3.3.7 -->
+  <link rel="stylesheet" href="/css/bootstrap.min.css">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="/css/font-awesome.min.css">
+  <!-- Ionicons -->
+  <link rel="stylesheet" href="/css/ionicons.min.css">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="/css/AdminLTE.min.css">
+  <!-- AdminLTE Skins. Choose a skin from the css/skins
+       folder instead of downloading all of them to reduce the load. -->
+  <link rel="stylesheet" href="/css/_all-skins.min.css">
+  <!-- Morris chart -->
+
+  <!-- jvectormap -->
+  <link rel="stylesheet" href="/css/jquery-jvectormap.css">
+  <!-- Date Picker -->
+  <link rel="stylesheet" href="/css/bootstrap-datepicker.min.css">
+  <!-- Daterange picker -->
+  <link rel="stylesheet" href="/css/daterangepicker.css">
+  <!-- bootstrap wysihtml5 - text editor -->
+  <link rel="stylesheet" href="/css/bootstrap3-wysihtml5.min.css">
+
+  <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+  <!--[if lt IE 9]>
+  <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+  <![endif]-->
+
+  <!-- Google Font -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+</head>
+<body class="hold-transition skin-blue sidebar-mini">
+<div class="wrapper">
+
+  <header class="main-header">
+    <!-- Logo -->
+    <a href="#" class="logo">
+      <!-- mini logo for sidebar mini 50x50 pixels -->
+      <span class="logo-mini"><b>S</b></span>
+      <!-- logo for regular state and mobile devices -->
+      <span class="logo-lg"><b></b></span>
+    </a>
+    <!-- Header Navbar: style can be found in header.less -->
+    <nav class="navbar navbar-static-top">
+      <!-- Sidebar toggle button-->
+      <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
+        <span class="sr-only">Toggle navigation</span>
+      </a>
+
+      <div class="navbar-custom-menu">
+        <ul class="nav navbar-nav">
+          <!-- Messages: style can be found in dropdown.less-->
+
+          <!-- Notifications: style can be found in dropdown.less -->
+
+          <!-- Tasks: style can be found in dropdown.less -->
+
+          <!-- User Account: style can be found in dropdown.less -->
+          <li class="dropdown user user-menu">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+              <img src="dist/img/kunj.jpg" class="user-image" alt="User Image">
+              <span class="hidden-xs">Vendor</span>
+            </a>
+            <ul class="dropdown-menu">
+              <!-- User image -->
+              <li class="user-header">
+                <img src="dist/img/kunj.jpg" class="img-circle" alt="User Image">
+
+                <p>
+                  Suresh - Businessman
+                  <small>Suresh and Sons Industries</small>
+                </p>
+              </li>
+              <!-- Menu Body -->
+
+              <!-- Menu Footer-->
+              <li class="user-footer">
+                <div class="col-xs-4">
+				</div>
+        <div class="col-xs-4">
+          <form action="/logout" method="get">
+            <input type="hidden" name="user" value="farmer">
+          <input type="submit" class="btn btn-default btn-flat" value="Sign out">
+        </form>
+        </div>
+              </li>
+            </ul>
+          </li>
+          <!-- Control Sidebar Toggle Button -->
+          <li>
+          </li>
+        </ul>
+      </div>
+    </nav>
+  </header>
+  <!-- Left side column. contains the logo and sidebar -->
+  <aside class="main-sidebar">
+    <!-- sidebar: style can be found in sidebar.less -->
+    <section class="sidebar">
+      <!-- Sidebar user panel -->
+
+      <!-- search form -->
+
+      <!-- /.search form -->
+      <!-- sidebar menu: : style can be found in sidebar.less -->
+      <ul class="sidebar-menu" data-widget="tree">
+        <li class="header">MAIN NAVIGATION</li>
+
+        <li class="treeview">
+          <a href="#">
+            <i class="fa fa-edit"></i> <span>Deals</span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+          </a>
+          <ul class="treeview-menu" id="list-student">
+
+          </ul>
+        </li>
+      </ul>
+    </section>
+    <!-- /.sidebar -->
+      </aside>
+
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+        Dashboard
+        <small>Auction panel</small>
+      </h1>
+    </section>
+<br><br>
+    <!-- Main content -->
+	<div class="row">
+	<div class="col-md-4">
+	</div>
+	<div class="col-md-4" align="center">
+
+	<button type="button" class="btn btn-danger" onclick="window.location.href='/vendor_dashboard'">Back</button>
+	</div>
+	<div class="col-md-4">
+	</div>
+	</div>
+	<br>
+
+    <!-- /.content -->
+
+	 <label>Name</label>
+				  <div class="input-group">
+			         <span class="input-group-addon"><i class="fa fa-fw fa-tree"></i></span>
+
+				<form id="crop" action="/vendor_crop_select" method="post">
+					<select class="form-control" name="crop_name" id="select">
+						<option hidden value="0">--select an option--</option>
+					</select>
+				</form>
+				</div>
+
+	<br><br>
+	<div>
+	<h2 align="center"><b>Auctions</b></h2>
+	</div>
+	<div>
+	<br><br>
+	 <ul id="query_datas" style="list-style-type:none;" class="list-group"></ul>
+	</div>
+
+  </div>
+   <script id="query-template" type="text/template">
+   <br>
+   <li class="list-group-item">
+   <br>
+  <form method="post" action="/vendor_interested_auction">
+
+
+
+	<div class="row">
+				<div class="col-md-6">
+				 <div class="form-group">
+                  <label>Farmer_user_name</label>
+				  <div class="input-group">
+			         <span class="input-group-addon"><i class="fa fa-fw fa-tree"></i></span>
+					 <p class="form-control" id="a">{{farmer_user_name}}
+           </p>
+				</div>
+              </div>
+				</div>
+				<div class="col-md-6">
+				 <div class="form-group">
+                  <label>Crop_Name</label>
+				  <div class="input-group">
+			         <span class="input-group-addon"><i class="fa fa-fw fa-tree"></i></span>
+<p class="form-control" id="b">{{crop_name}}</p>				</div>
+              </div>
+				</div>
+				</div>
+        <div class="form-group">
+  				  <input type="hidden" value={{auction_id}} name="auction_id"/>
+  				</div>
+				<div class="row">
+				 <div class="col-md-6">
+				 <div class="form-group">
+                  <label>Quantity in kilogram</label>
+				  <div class="input-group">
+			         <span class="input-group-addon"><i class="fa fa-fw fa-balance-scale"></i></span>
+<p class="form-control" id="c">{{crop_quantity}}</p>				</div>
+              </div>
+				</div>
+				<div class="col-md-6">
+				 <div class="form-group">
+                  <label>Expected Price per kilogram</label>
+				  <div class="input-group">
+			         <span class="input-group-addon"><i class="fa fa-fw fa-rupee"></i></span>
+<p class="form-control" id="d">{{crop_expected_price}}</p>				</div>
+              </div>
+				</div>
+				</div>
+				<div class="row">
+				<div class="col-md-6">
+				 <div class="form-group">
+                  <label>Time</label>
+				  <div class="input-group">
+			         <span class="input-group-addon"><i class="fa fa-fw fa-rupee"></i></span>
+<p class="form-control" id="e"> 9:30 AM </p>				</div>
+              </div>
+				</div>
+        <div class="col-md-6">
+				 <div class="form-group">
+                  <label>Time</label>
+				  <div class="input-group">
+			         <span class="input-group-addon"><i class="fa fa-fw fa-rupee"></i></span>
+<p class="form-control" id="e"> 11-09-2019 </p>				</div>
+              </div>
+				</div>
+				 </div>
+				 <br>
+<br>
+<div class="row">
+<div class="col-md-">
+<div class="box-footer" align="center">
+                <button type="submit" class="btn btn-primary" name="ans" value="yes">Take Part</button>
+              </div>
+			  </div>
+
+</div>
+<br>
+
+	</form>
+
+
+	</li>
+  </script>
+
+
+
+
+  <script src="/js/jquery.min.js"-- jQuery UI 1.11.4 -->
+<!-- jQuery 3 -->
+<script src="/js/jquery-ui.min.js"></script>
+
+  <script>
+	$('#select').change( function(){
+		$("#crop").submit();
+	})
+
+  </script>
+<script type="text/javascript" src="/selected.json"></script>
+  <script>
+  function readCookie(name) {
+  var nameEQ = name + "=";
+  var ca = document.cookie.split(';');
+  for(var i=0;i < ca.length;i++) {
+      var c = ca[i];
+      while (c.charAt(0) === ' ') {
+          c = c.substring(1,c.length);
+      }
+      if (c.indexOf(nameEQ) === 0) {
+          return c.substring(nameEQ.length,c.length);
+      }
+  }
+  return null;
+  }
+
+
+
+var mydata = JSON.parse(selected);
+if (mydata[0].selected.length!=0)
+{
+username=readCookie('vendor_user_name');
+console.log(mydata[0].selected[username]);
+mydata[0].selected[username].forEach(function(element) {
+   $(document).ready(function(){
+     var template = jQuery('#query-template').html();
+     var html = Mustache.render(template, {
+	   farmer_user_name:element.farmer_user_name,
+	   crop_name:element.crop_name,
+	   crop_expected_price:element.crop_expected_price,
+	   crop_quantity:element.crop_quantity,
+	   auction_id:element._id,
+     });
+     console.log(element._id);
+    jQuery('#query_datas').append(html);
+
+});
+
+ console.log(element);
+});
+}
+
+   </script>
+
+
+
+
+
+
+
+
+
+
+
+ <script type="text/javascript" src="/crop.json"></script>
+
+   <script>
+
+   var mydata = JSON.parse(crop);
+
+if (mydata[0].crop.length!=0)
+{
+mydata[0].crop.forEach(function(element) {
+
+	 $(document).ready(function(){
+
+		$('#select').append('<option value="'+element.Name+'"> '+element.Name+'</option>');
+	});
+});
+}
+
+else
+{
+ $(document).ready(function(){
+ var x = document.getElementById("no");
+  x.innerHTML = "No more Auctions....";
+});
+}
+
+ </script>
+
+
+
+
+
+
+
+
+
+  <!-- /.content-wrapper -->
+  <footer class="main-footer">
+    <div class="pull-right hidden-xs">
+      <b>Version</b> 1.0.0
+    </div>
+    <strong>Copyright &copy; 2019 BVM Engineering College</a>.</strong> All rights
+    reserved.
+  </footer>
+
+  <!-- Control Sidebar -->
+
+  <!-- /.control-sidebar -->
+  <!-- Add the sidebar's background. This div must be placed
+       immediately after the control sidebar -->
+
+</div>
+<!-- ./wrapper -->
+<script src="/js/jquery-3.1.0.min.js"></script>
+<script src="/js/mustache.js"></script>
+
+
+
+
+<!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
+<script>
+  $.widget.bridge('uibutton', $.ui.button);
+</script>
+<!-- Bootstrap 3.3.7 -->
+<script src="/js/bootstrap.min.js"></script>
+<!-- Morris.js charts -->
+<
+<!-- Sparkline -->
+<script src="/js/jquery.sparkline.min.js"></script>
+<!-- jvectormap -->
+<script src="/js/jquery-jvectormap-1.2.2.min.js"></script>
+<script src="/js/jquery-jvectormap-world-mill-en.js"></script>
+<!-- jQuery Knob Chart -->
+<
+<!-- daterangepicker -->
+
+<!-- Bootstrap WYSIHTML5 -->
+<script src="/js/bootstrap3-wysihtml5.all.min.js"></script>
+<!-- Slimscroll -->
+<script src="/js/jquery.slimscroll.min.js"></script>
+<!-- FastClick -->
+<script src="/js/fastclick.js"></script>
+<!-- AdminLTE App -->
+<script src="/js/adminlte.min.js"></script>
+<!-- AdminLTE dashboard demo (This is only for demo purposes) -->
+<script src="/js/dashboard.js"></script>
+<!-- AdminLTE for demo purposes -->
+<script src="/js/demo.js"></script>
+</body>
+</html>
