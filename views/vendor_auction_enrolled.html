@@ -48,7 +48,28 @@
       <span class="logo-mini"><b>S</b></span>
       <!-- logo for regular state and mobile devices -->
       <span class="logo-lg"><b></b></span>
+      <p id="name"></p>
     </a>
+    <script src="/js/jquery-3.1.0.min.js"></script>
+
+    <script>
+    function readCookie(name) {
+    var nameEQ = name + "=";
+    var ca = document.cookie.split(';');
+    for(var i=0;i < ca.length;i++) {
+        var c = ca[i];
+        while (c.charAt(0) === ' ') {
+            c = c.substring(1,c.length);
+        }
+        if (c.indexOf(nameEQ) === 0) {
+            return c.substring(nameEQ.length,c.length);
+        }
+    }
+    return null;
+  }
+    document.getElementById("name").innerHTML=readCookie('vendor_user_name');
+
+  </script>
     <!-- Header Navbar: style can be found in header.less -->
     <nav class="navbar navbar-static-top">
       <!-- Sidebar toggle button-->
@@ -232,15 +253,15 @@
                   <label>Time</label>
 				  <div class="input-group">
 			         <span class="input-group-addon"><i class="fa fa-fw fa-rupee"></i></span>
-<p class="form-control" id="e"> 9:30 AM </p>				</div>
+<p class="form-control" id="e">{{start_time}} </p>				</div>
               </div>
 				</div>
         <div class="col-md-6">
 				 <div class="form-group">
-                  <label>Time</label>
+                  <label>Date</label>
 				  <div class="input-group">
 			         <span class="input-group-addon"><i class="fa fa-fw fa-rupee"></i></span>
-<p class="form-control" id="e"> 11-09-2019 </p>				</div>
+<p class="form-control" id="e"> {{start_date}} </p>				</div>
               </div>
 				</div>
 				 </div>
@@ -307,6 +328,8 @@ mydata[0].enrolled[username].forEach(function(element) {
 	   crop_expected_price:element.crop_expected_price,
 	   crop_quantity:element.crop_quantity,
 	   auction_id:element._id,
+     start_time:element.start_time,
+     start_date:element.start_date
      });
      console.log(element._id);
     jQuery('#query_datas').append(html);

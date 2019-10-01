@@ -68,7 +68,7 @@
     return null;
 }
     document.getElementById("name").innerHTML=readCookie('vendor_user_name');
-    console/console.log(readCookie("vendor_user_name"));
+
   </script>
     <!-- Header Navbar: style can be found in header.less -->
     <nav class="navbar navbar-static-top">
@@ -79,13 +79,7 @@
 
       <div class="navbar-custom-menu">
         <ul class="nav navbar-nav">
-          <!-- Messages: style can be found in dropdown.less-->
-
-          <!-- Notifications: style can be found in dropdown.less -->
-
-          <!-- Tasks: style can be found in dropdown.less -->
-
-          <!-- User Account: style can be found in dropdown.less -->
+        
           <li class="dropdown user user-menu">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
               <img src="dist/img/kunj.jpg" class="user-image" alt="User Image">
@@ -194,13 +188,13 @@
 
 
 				<form method="post" action="/send_vendor_auction_enrolled">
-				<input type="submit" class="btn btn-success btn-lg btn-block" value="Enrolled">
+				<input type="submit" class="btn btn-warning btn-lg btn-block" value="Enrolled">
 				</form>
 				</div>
 				<div class="col-xs-5" align="center">
 				<form method="post" action="/send_vendor_auction_result">
 
-				<input type="submit" class="btn btn-warning btn-lg btn-block" value="Result">
+				<input type="submit" class="btn btn-success btn-lg btn-block" value="Result">
 				</form>
 				</div>
         <div class="col-xs-1">

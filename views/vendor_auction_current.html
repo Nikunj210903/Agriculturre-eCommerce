@@ -47,8 +47,29 @@
       <!-- mini logo for sidebar mini 50x50 pixels -->
       <span class="logo-mini"><b>S</b></span>
       <!-- logo for regular state and mobile devices -->
-      <span class="logo-lg"><b>Sureshbhai</b></span>
+      <span class="logo-lg"><b></b></span>
+      <p id="name"></p>
     </a>
+    <script src="/js/jquery-3.1.0.min.js"></script>
+
+    <script>
+    function readCookie(name) {
+    var nameEQ = name + "=";
+    var ca = document.cookie.split(';');
+    for(var i=0;i < ca.length;i++) {
+        var c = ca[i];
+        while (c.charAt(0) === ' ') {
+            c = c.substring(1,c.length);
+        }
+        if (c.indexOf(nameEQ) === 0) {
+            return c.substring(nameEQ.length,c.length);
+        }
+    }
+    return null;
+    }
+    document.getElementById("name").innerHTML=readCookie('vendor_user_name');
+
+    </script>
     <!-- Header Navbar: style can be found in header.less -->
     <nav class="navbar navbar-static-top">
       <!-- Sidebar toggle button-->
@@ -88,7 +109,7 @@
 				</div>
         <div class="col-xs-4">
           <form action="/logout" method="get">
-            <input type="hidden" name="user" value="vendor">
+            <input type="hidden" name="user" value="farmer">
           <input type="submit" class="btn btn-default btn-flat" value="Sign out">
         </form>
         </div>
@@ -129,7 +150,7 @@
       </ul>
     </section>
     <!-- /.sidebar -->
-  </aside>
+      </aside>
 
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
@@ -153,9 +174,202 @@
 	</div>
 	</div>
 	<br>
- <ul id="query_datas" style="list-style-type:none;"></ul>
+
     <!-- /.content -->
+
+	 <label>Name</label>
+				  <div class="input-group">
+			         <span class="input-group-addon"><i class="fa fa-fw fa-tree"></i></span>
+
+				<form id="crop" action="/vendor_crop_select_current" method="post">
+					<select class="form-control" name="crop_name" id="select">
+						<option hidden value="0">--select an option--</option>
+					</select>
+				</form>
+				</div>
+
+	<br><br>
+	<div>
+	<h2 align="center"><b>Auctions</b></h2>
+	</div>
+	<div>
+	<br><br>
+	 <ul id="query_datas" style="list-style-type:none;" class="list-group"></ul>
+	</div>
+
   </div>
+   <script id="query-template" type="text/template">
+   <br>
+   <li class="list-group-item">
+   <br>
+  <form id="bide_submit" action="">
+	<div class="row">
+				<div class="col-md-6">
+				 <div class="form-group">
+                  <label>Farmer_user_name</label>
+				  <div class="input-group">
+			         <span class="input-group-addon"><i class="fa fa-fw fa-tree"></i></span>
+					 <p class="form-control" id="a">{{farmer_user_name}}
+           </p>
+				</div>
+              </div>
+				</div>
+				<div class="col-md-6">
+				 <div class="form-group">
+                  <label>Crop_Name</label>
+				  <div class="input-group">
+			         <span class="input-group-addon"><i class="fa fa-fw fa-tree"></i></span>
+<p class="form-control" id="b">{{crop_name}}</p>				</div>
+              </div>
+				</div>
+				</div>
+        <div class="form-group">
+  				  <input type="hidden" value={{auction_id}} name="auction_id"/>
+  				</div>
+          <div class="form-group">
+    				  <input type="hidden" value={{vendor_user_name}} name="vendor_user_name"/>
+    				</div>
+				<div class="row">
+				 <div class="col-md-6">
+				 <div class="form-group">
+                  <label>Quantity in kilogram</label>
+				  <div class="input-group">
+			         <span class="input-group-addon"><i class="fa fa-fw fa-balance-scale"></i></span>
+<p class="form-control" id="c">{{crop_quantity}}</p>				</div>
+              </div>
+				</div>
+				<div class="col-md-6">
+				 <div class="form-group">
+                  <label>Expected Price per kilogram</label>
+				  <div class="input-group">
+			         <span class="input-group-addon"><i class="fa fa-fw fa-rupee"></i></span>
+<p class="form-control" id="d">{{crop_expected_price}}</p>				</div>
+              </div>
+				</div>
+				</div>
+				<div class="row">
+				<div class="col-md-6">
+				 <div class="form-group">
+                  <label>Date</label>
+				  <div class="input-group">
+			         <span class="input-group-addon"><i class="fa fa-fw fa-rupee"></i></span>
+<p class="form-control" id="e"> {{start_date}} </p>				</div>
+              </div>
+				</div>
+        <div class="col-md-6">
+				 <div class="form-group">
+                  <label>Time</label>
+				  <div class="input-group">
+			         <span class="input-group-addon"><i class="fa fa-fw fa-rupee"></i></span>
+<p class="form-control" id="e">{{start_time}}</p>				</div>
+              </div>
+				</div>
+				 </div>
+				 <br>
+<br>
+<!-- <div class="row">
+<div class="col-md-">
+<div class="box-footer" align="center">
+                <button type="submit" class="btn btn-primary" name="ans" value="yes">TaPart</button>
+              </div>
+			  </div>
+
+</div> -->
+
+<div class="row">
+<div class="col-md-6">
+ <div class="form-group">
+          <label>Max_Price</label>
+  <div class="input-group">
+       <span class="input-group-addon"><i class="fa fa-fw fa-rupee"></i></span>
+<p class="form-control" id="e"> {{max_price}} </p>				</div>
+      </div>
+</div>
+<div class="col-md-6">
+ <div class="form-group">
+          <label>Your_Price</label>
+          <div class="input-group">
+               <span class="input-group-addon"><i class="fa fa-fw fa-balance-scale"></i></span>
+                <input type="text" class="form-control" name="vendor_bid_price" placeholder="Enter your Price">
+         </div>
+      </div>
+</div>
+ </div>
+<br>
+<div class="row">
+<div class="col-md-">
+<div class="box-footer" align="center">
+                <input type="submit" class="btn btn-primary" value="Bid">
+              </div>
+			  </div>
+
+</div>
+<br>
+	</form>
+
+
+	</li>
+  </script>
+
+
+
+
+
+<script src="/js/jquery-ui.min.js"></script>
+
+  <script>
+	$('#select').change( function(){
+		$("#crop").submit();
+	})
+
+  </script>
+<script type="text/javascript" src="/current_vendor.json"></script>
+  <script>
+  function readCookie(name) {
+  var nameEQ = name + "=";
+  var ca = document.cookie.split(';');
+  for(var i=0;i < ca.length;i++) {
+      var c = ca[i];
+      while (c.charAt(0) === ' ') {
+          c = c.substring(1,c.length);
+      }
+      if (c.indexOf(nameEQ) === 0) {
+          return c.substring(nameEQ.length,c.length);
+      }
+  }
+  return null;
+  }
+
+
+var mydata = JSON.parse(current_vendor);
+if (mydata[0].current_vendor.length!=0)
+{
+username=readCookie('vendor_user_name');
+console.log(mydata[0].current_vendor[username]);
+mydata[0].current_vendor[username].forEach(function(element) {
+   $(document).ready(function(){
+     var template = jQuery('#query-template').html();
+     var html = Mustache.render(template, {
+	   farmer_user_name:element.farmer_user_name,
+	   crop_name:element.crop_name,
+	   crop_expected_price:element.crop_expected_price,
+	   crop_quantity:element.crop_quantity,
+	   auction_id:element._id,
+     max_price:element.result.Price,
+     start_time:element.start_time,
+     start_date:element.start_date,
+     vendor_user_name:username
+     });
+     console.log(element._id);
+    jQuery('#query_datas').append(html);
+
+});
+
+ console.log(element);
+});
+}
+
+   </script>
 
 
 
@@ -167,42 +381,40 @@
 
 
 
+ <script type="text/javascript" src="/crop.json"></script>
 
- <script id="query-template1" type="text/template">
+   <script>
 
+   var mydata1 = JSON.parse(crop);
 
-	<tr>
+if (mydata1[0].crop.length!=0)
+{
+mydata1[0].crop.forEach(function(element) {
 
-	<td>{{Name}}</td>
-	<td>{{Quantity}}</td>
-	<td>{{Price}}</td>
-	</tr>
+	 $(document).ready(function(){
+
+		$('#select').append('<option value="'+element.Name+'"> '+element.Name+'</option>');
+	});
+});
+}
+
+else
+{
+ $(document).ready(function(){
+ var x = document.getElementById("no");
+  x.innerHTML = "No more Auctions....";
+});
+}
 
  </script>
 
 
 
-  <script id="query-template" type="text/template">
- <li>
-        <div class="box box-success">
-
-            <!-- /.box-header -->
-            <div class="box-body">
-              <table  class="table table-hover" id="mytable">
-			  <tbody>
-			  <th>Vendor_name</th>
-			  <th>Quantity</th>
-			  <th>Price</th>
-			  </tbody>
-
-			  </table>
-            </div>
-			</div>
-            <!-- /.box-body -->
 
 
-		 </li>
-</script>
+
+
+
 
   <!-- /.content-wrapper -->
   <footer class="main-footer">
@@ -221,64 +433,12 @@
 
 </div>
 <!-- ./wrapper -->
-<script src="/js/jquery-3.1.0.min.js"></script>
+<script src="/js/jquery.min.js"></script>
 <script src="/js/mustache.js"></script>
 
-      <script type="text/javascript" src="/auction.json"></script>
- <script>
-
-   var mydata = JSON.parse(auction);
-
-if (mydata[0].auction.length!=0)
-{
-var x = mydata[0].auction.length;
-
-i = 0;
-mydata[0].auction.forEach(function(element) {
-   $(document).ready(function(){
-     var template = jQuery('#query-template').html();
-     var html = Mustache.render(template, {
-	 });
 
 
-	console.log(id);
-	 jQuery('#query_datas').append(html);
 
-	 var id = 'mytable'+i;
-	 $('#mytable').attr('id',id);
-	 element.Vendors.forEach(function(e){
-	      var t = jQuery('#query-template1').html();
-		  var h = Mustache.render(t, {
-			Name:e.Name,
-			Price:e.Price,
-			Quantity:e.Quantity,
-     });
-
-
-	 $('#'+id+' tr:last').after(h);
-	 })
-
-	 i += 1;
-	 console.log(id);
-});
-
-});
-}
-else
-{
- $(document).ready(function(){
- var x = document.getElementById("no");
-  x.innerHTML = "No more Auctions....";
-});
-}
-
-
-   </script>
-
-<!-- jQuery 3 -->
-<script src="/js/jquery.min.js"></script>
-<!-- jQuery UI 1.11.4 -->
-<script src="/js/jquery-ui.min.js"></script>
 <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
 <script>
   $.widget.bridge('uibutton', $.ui.button);
@@ -308,5 +468,62 @@ else
 <script src="/js/dashboard.js"></script>
 <!-- AdminLTE for demo purposes -->
 <script src="/js/demo.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+var socket=io();
+
+socket.on('connect',function(){
+  socket.emit('join',{
+    data:mydata[0].current_vendor,
+    vendor:username
+  })
+})
+
+
+$(document).on("submit","#bide_submit",function(e){
+  e.preventDefault();
+  socket.emit('bide_submit',{
+    auction_id:jQuery('[name=auction_id]').val(),
+    vendor_user_name:jQuery('[name=vendor_user_name]').val(),
+    vendor_bid_price:jQuery('[name=vendor_bid_price]').val()
+  })
+})
+
+socket.on('change',function(data){
+  var mydata2 = JSON.parse(current_vendor);
+  if (mydata2[0].current_vendor.length!=0)
+  {
+  username=readCookie('vendor_user_name');
+  //document.getElementById("query_datas").innerHTML="";
+    $("#query_datas").empty();
+    console.log("cleared")
+  mydata2[0].current_vendor[username].forEach(function(e) {
+    var element=e
+    if(element._id==data.id)
+    {
+      element.result.Price=data.price;
+    }
+    console.log(element)
+    console.log(mydata2)
+      $(document).ready(function(){
+       var template = jQuery('#query-template').html();
+       var html = Mustache.render(template, {
+       farmer_user_name:element.farmer_user_name,
+       crop_name:element.crop_name,
+       crop_expected_price:element.crop_expected_price,
+       crop_quantity:element.crop_quantity,
+       auction_id:element._id,
+       max_price:element.result.Price,
+       start_time:element.start_time,
+       start_date:element.start_date,
+       vendor_user_name:username
+       });
+      jQuery('#query_datas').append(html);
+  });
+})
+}
+})
+
+</script>
 </body>
 </html>

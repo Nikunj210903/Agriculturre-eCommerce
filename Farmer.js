@@ -19,7 +19,8 @@ var Farmer = mongoose.model('Farmer', {
     type: String,
   },
   user_name:{
-	type:String,  
+	type:String,
+  unique:true  
   },
   farm:{
 	  type:String,

@@ -7,7 +7,15 @@
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   <!-- Bootstrap 3.3.7 -->
-  <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+  <script src="./js1/jquery.min.js"></script>
+   <link rel="stylesheet" href="./css1/daterangepicker.css">
+   <link rel="stylesheet" href="./css1/bootstrap.min.css">
+   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+   <link rel="stylesheet" href="./bootstrap-datetimepicker-master/css/bootstrap-datetimepicker.min.css">
+   <script src="./bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.js"></script>
+   <script src="./bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.min.js"></script>
+
   <!-- Font Awesome -->
   <link rel="stylesheet" href="/css/font-awesome.min.css">
   <!-- Ionicons -->
@@ -37,6 +45,18 @@
 
   <!-- Google Font -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+
+
+
+
+
+
+
+     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+     <link rel="stylesheet" href="/css/bootstrap-datetimepicker.min.css">
+
+
+
 </head>
 <body class="hold-transition skin-blue sidebar-mini">
 <div class="wrapper">
@@ -47,7 +67,8 @@
       <!-- mini logo for sidebar mini 50x50 pixels -->
       <span class="logo-mini"><b>S</b></span>
       <!-- logo for regular state and mobile devices -->
-      <span class="logo-lg"><b>Sureshbhai</b></span>
+      <span class="logo-lg"><b></b></span>
+      <p id="name"></p>
     </a>
     <!-- Header Navbar: style can be found in header.less -->
     <nav class="navbar navbar-static-top">
@@ -55,7 +76,28 @@
       <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
         <span class="sr-only">Toggle navigation</span>
       </a>
+      <script>
 
+      function readCookie(name) {
+      var nameEQ = name + "=";
+      var ca = document.cookie.split(';');
+      for(var i=0;i < ca.length;i++) {
+          var c = ca[i];
+          while (c.charAt(0) === ' ') {
+              c = c.substring(1,c.length);
+          }
+          if (c.indexOf(nameEQ) === 0) {
+              return c.substring(nameEQ.length,c.length);
+          }
+      }
+      return null;
+      }
+      document.getElementById("name").innerHTML=readCookie('farmer_user_name');
+
+      function myfunction(){
+      alert("You have successfully launched the auction");
+      }
+      </script>
       <div class="navbar-custom-menu">
         <ul class="nav navbar-nav">
           <!-- Messages: style can be found in dropdown.less-->
@@ -68,7 +110,7 @@
           <li class="dropdown user user-menu">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
               <img src="dist/img/kunj.jpg" class="user-image" alt="User Image">
-              <span class="hidden-xs">Vendor</span>
+              <span class="hidden-xs">Farmer</span>
             </a>
             <ul class="dropdown-menu">
               <!-- User image -->
@@ -76,8 +118,8 @@
                 <img src="dist/img/kunj.jpg" class="img-circle" alt="User Image">
 
                 <p>
-                  Suresh - Businessman
-                  <small>Suresh and Sons Industries</small>
+                  Farmer
+                  <small>Village : Suvag</small>
                 </p>
               </li>
               <!-- Menu Body -->
@@ -201,56 +243,134 @@
 				</div>
 				 </div>
 
+
+
+
+
+
+
+
+
+
+
+
 <div class="row">
-  <div class="col-md-6">
-  <div class="form-group">
-           <label>Start-Time</label>
-   <div class="input-group">
-        <span class="input-group-addon"><i class="fa fa-fw fa-balance-scale"></i></span>
-         <input type="text" class="form-control" name="start_time" value="11:30" placeholder="Enter Start Time">
-  </div>
-       </div>
-  </div>
   <div class="col-md-6">
   <div class="form-group">
            <label>Start-Date</label>
    <div class="input-group date" id='datetimepicker1'>
-        <span class="input-group-addon"><i class="fa fa-fw fa-balance-scale"></i></span>
-         <input type="text" class="form-control" name="start_date" value="11:-09-2019" placeholder="Enter Start Time">
+     <span class="input-group-addon">
+                               <span class="glyphicon glyphicon-calendar"></span>
+                           </span>
+         <input type="text" class="form-control" name="start_date" placeholder="Enter Start Date">
   </div>
-  <script type="text/javascript">
-      $(function () {
-          $('#datetimepicker1').datetimepicker();
-      });
-  </script>
        </div>
   </div>
 
-        </div>
-        <div class="row">
-<div class="col-md-6">
-<div class="form-group">
-         <label>End-Time</label>
- <div class="input-group">
-      <span class="input-group-addon"><i class="fa fa-fw fa-balance-scale"></i></span>
-       <input type="text" class="form-control" name="end_time" value="11:30" placeholder="Enter End Time">
-</div>
-     </div>
-</div>
-<div class="col-md-6">
-<div class="form-group">
-         <label>End Date</label>
- <div class="input-group">
-      <span class="input-group-addon"><i class="fa fa-fw fa-balance-scale"></i></span>
-       <input type="text" class="form-control" name="end_date" value="11-09-2019" placeholder="Enter Date">
-</div>
-     </div>
-</div>
+
+  <script type="text/javascript">
+      $(function () {
+          $('#datetimepicker1').datetimepicker({
+            format: 'yyyy-mm-dd',
+autoclose: true,
+todayBtn: true,
+minView: 2,
+viewSelect: 'year',
+startView: 4,
+autoclose: true,
+bootcssVer: 3,
+keepOpen: false
+
+          });
+      });
+  </script>
 
 
-</div>
+
+  <div class="col-md-6">
+  <div class="form-group">
+           <label>Start-Time</label>
+   <div class="input-group date" id='datetimepicker2'>
+     <span class="input-group-addon">
+                         <span class="glyphicon glyphicon-calendar"></span>
+                     </span>
+         <input type="text" class="form-control" name="start_time" placeholder="Enter Start Time">
+  </div>
+       </div>
+  </div>
+  <script type="text/javascript">
+      $(function () {
+          $('#datetimepicker2').datetimepicker({
+            pickDate: false,
+minuteStep: 1,
+pickerPosition: 'bottom-right',
+format: 'HH:ii P',
+autoclose: true,
+showMeridian: true,
+startView: 1,
+maxView: 1,
+          });
+      });
+  </script>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+    <div class="form-group">
+             <label>End-Date</label>
+     <div class="input-group date" id='datetimepicker3'>
+       <span class="input-group-addon">
+                                 <span class="glyphicon glyphicon-calendar"></span>
+                             </span>
+           <input type="text" class="form-control" name="end_date" placeholder="Enter End Date">
+    </div>
+         </div>
+    </div>
+
+
+    <script type="text/javascript">
+        $(function () {
+            $('#datetimepicker3').datetimepicker({
+              format: 'yyyy-mm-dd',
+  autoclose: true,
+  todayBtn: true,
+  minView: 2,
+  viewSelect: 'year',
+  startView: 4,
+  autoclose: true,
+  bootcssVer: 3,
+  keepOpen: false
+
+            });
+        });
+    </script>
+    <div class="col-md-6">
+    <div class="form-group">
+             <label>End-Time</label>
+     <div class="input-group date" id='datetimepicker4'>
+       <span class="input-group-addon">
+                           <span class="glyphicon glyphicon-calendar"></span>
+                       </span>
+           <input type="text" class="form-control" name="end_time" placeholder="Enter End Time">
+    </div>
+         </div>
+    </div>
+    <script type="text/javascript">
+        $(function () {
+            $('#datetimepicker4').datetimepicker({
+              pickDate: false,
+  minuteStep: 1,
+  pickerPosition: 'bottom-right',
+  format: 'HH:ii P',
+  autoclose: true,
+  showMeridian: true,
+  startView: 1,
+  maxView: 1,
+            });
+        });
+    </script>
+    </div>
 <div class="box-footer" align="center">
-                <button type="submit" class="btn btn-primary">Submit</button>
+                <button type="submit" class="btn btn-primary" onclick="myfunction()">Launch</button>
               </div>
               </form>
             </div>
@@ -267,7 +387,7 @@
   <script type="text/javascript" src="/crop.json"></script>
 
 <!-- jQuery 3 -->
-<script src="/js/jquery.min.js"></script>
+
 <!-- jQuery UI 1.11.4 -->
 <script src="/js/jquery-ui.min.js"></script>
    <script>
@@ -339,8 +459,8 @@ else
        immediately after the control sidebar -->
 
 </div>
-<!-- ./wrapper -->
-<script src="/js/jquery-3.1.0.min.js"></script>
+
+
 <script src="/js/mustache.js"></script>
 
 
@@ -373,5 +493,9 @@ else
 <script src="/js/dashboard.js"></script>
 <!-- AdminLTE for demo purposes -->
 <script src="/js/demo.js"></script>
+
+
+
+
 </body>
 </html>

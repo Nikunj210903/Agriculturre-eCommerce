@@ -1,10 +1,13 @@
 var hbs = require('hbs');
+var http=require("http");
 var express=require("express");
 var path=require("path");
+var socketIO=require("socket.io");
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 var ObjectId = require('mongodb').ObjectId;
+
 
 var cookieParser = require('cookie-parser');
 var {Auction} = require('./Auction');
@@ -18,6 +21,9 @@ const port = process.env.PORT || 3000;
 
 
 const publicPath = path.join(__dirname, 'views');
+
+
+
 
 
 var app=express();
@@ -37,10 +43,86 @@ mongoose.connect('mongodb://localhost:27017/Bazzar');
 
 
 
+var server=http.createServer(app);
+var io=socketIO(server);
+io.on('connection',(socket)=>{
+  console.log("new connected");
+
+socket.on('disconnect',function(){
+
+  console.log('disconnect');
+
+})
 
 
 
 
+
+socket.on('join',function(data){
+  var dic=data.data
+  var key=data.vendor
+  if(dic[key]!=undefined)
+  {
+  dic[key].forEach(function(element){
+  console.log(element._id)
+socket.join(element._id)
+
+})
+}
+console.log(socket);
+})
+
+  socket.on('bide_submit',function(data){
+    console.log(data);
+    var auction_id=data.auction_id;
+    var o_id=new ObjectId(auction_id);
+    Auction.findOneAndUpdate({ $and : [ {_id:o_id} ,
+                                      { Vendors : { $elemMatch :{ User_name : data.vendor_user_name }}},
+                                      { "result.Price" : {$lt: data.vendor_bid_price}  }]},{$set:{"Vendors.$.Price":data.vendor_bid_price, "result.User_name": data.vendor_user_name ,"result.Price":data.vendor_bid_price} },
+                                      {new:true},function(err,model){
+                                        if(model)
+                                        {
+    dic_vendor_current[data.vendor_user_name] = [model];
+
+    var jsonData = '{"current_vendor":' + JSON.stringify(dic_vendor_current) + '}';
+      var jsonObj = JSON.parse(jsonData);
+      var jsonContent = "current_vendor = '[" + JSON.stringify(jsonObj) +"]'";
+      fs.writeFile("views/current_vendor.json", jsonContent, 'utf8', function (err) {
+        if (err) {
+        console.log("An error occured while writing JSON Object to File.");
+        return console.log(err);
+      }
+    });
+
+    io.to(auction_id).emit('change',{
+      price:data.vendor_bid_price,
+      id:data.auction_id
+    })
+  }
+    });
+  });
+})
+
+
+function fun(){
+  var date=new Date();
+  d = parseInt(date.getDate());
+  d = (d < 10?"0":"")+d;
+  m = date.getMonth() + 1;
+  m = (m < 10?"0":"")+m;
+  y = date.getFullYear();
+  temp_date = y+"-"+ m +"-"+ d;
+  time = date.toLocaleString('en-US', { hour:'numeric',minute:'numeric', hour12: true});
+if(parseInt(time[0])<10 && time[0]>-1)
+{
+  time="0"+time;
+}
+ Auction.updateMany({$and: [{start_date :{$eq: temp_date}}, {start_time : {$eq: time}}]} , {$set: {flag:'0'}},function(err,doc){
+ });
+ Auction.updateMany( { $and:[{end_date:{$eq: temp_date}}, {end_time:{$eq: time}}] }, {$set: {flag:'1'}},function(err,doc){
+ });
+}
+setInterval(fun,10000);
 app.get("/",function(req,res){
   res.sendFile("views/login.html",{root:__dirname});
 })
@@ -110,10 +192,21 @@ app.post("/store_farmer_sign_up",function(req,res){
 	user_name:req.body.anum,
 	token:token
   });
- farmer.save();
+ farmer.save(function(err){
+if(err){
+   console.log("error");
+   res.cookie('farmer_exist',"yes");
+    res.sendFile("views/farmer_sign_up.html",{root:__dirname});
 
-        res.cookie('farmer_user_name',req.body.anum);
-				res.sendFile("views/farmer_dashboard.html",{root:__dirname});
+
+ }
+ else{
+   res.cookie('farmer_user_name',req.body.anum);
+   res.sendFile("views/farmer_dashboard.html",{root:__dirname});
+ }
+ });
+
+
 });
 
 
@@ -143,7 +236,7 @@ res.sendFile("views/farmer_auction_launch.html",{root:__dirname});
 
 
 app.post("/farmer_auction_launch",function(req,res){
-  console.log(req.cookies.farmer_user_name)
+   console.log(req.cookies.farmer_user_name)
   var auction=new Auction({
   crop_name:req.body.crop_name,
 	farmer_user_name:req.cookies.farmer_user_name,
@@ -153,7 +246,10 @@ app.post("/farmer_auction_launch",function(req,res){
   start_time:req.body.start_time,
   start_date:req.body.start_date,
   end_time:req.body.end_time,
-  end_date:req.body.end_date
+  end_date:req.body.end_date,
+  flag:"-1", //not started yet
+
+  result:{User_name:"xyz",Price:"0"}
   });
   auction.save();
   console.log(auction);
@@ -166,43 +262,150 @@ app.post("/farmer_auction_launch",function(req,res){
 
 
 app.post("/send_farmer_auction_current_page",function(req,res){
- Auction.find().then((doc)=>{
-	const result = doc.filter(docs => docs.farmer_name=="ramesh");
-    var jsonData = '{"auction":' + JSON.stringify(result) + '}';
-    // parse json
-    var jsonObj = JSON.parse(jsonData);
-    // stringify JSON Object
-    var jsonContent = "auction = '[" + JSON.stringify(jsonObj) +"]'";
-    fs.writeFile("views/farmer_current_auction.json", jsonContent, 'utf8', function (err) {
-        if (err) {
-            console.log("An error occured while writing JSON Object to File.");
-            return console.log(err);
-        }
-    });
 
-    });
 res.sendFile("views/farmer_auction_current.html",{root:__dirname});
 })
 
 
 
 
-app.post("/send_farmer_auction_result_page",function(req,res){
 
- Auction.find().then((doc)=>{
-	const result = doc.filter(docs => docs.farmer_name=="ramesh");
-    var jsonData = '{"auction":' + JSON.stringify(result) + '}';
-    // parse json
-    var jsonObj = JSON.parse(jsonData);
-    // stringify JSON Object
-    var jsonContent = "auction = '[" + JSON.stringify(jsonObj) +"]'";
-    fs.writeFile("views/farmer_launched_auction.json", jsonContent, 'utf8', function (err) {
-        if (err) {
-            console.log("An error occured while writing JSON Object to File.");
-            return console.log(err);
-        }
+
+
+
+
+
+
+
+var dic_farmer_crop_sellect_current={}
+//console.log("firs[t[[[[[[]]]]]]]")
+console.log(dic_farmer_crop_sellect_current)
+app.post("/farmer_crop_select_current",function(req,res){
+var name = req.body.crop_name;
+  Auction.find({crop_name:name,farmer_user_name:req.cookies.farmer_user_name,flag:"0"}).then((doc)=>{
+    console.log(doc);
+  dic_farmer_crop_sellect_current[req.cookies.farmer_user_name] = doc;
+  var result=dic_farmer_crop_sellect_current
+  console.log(dic_farmer_crop_sellect_current);
+
+		var jsonData = '{"current_farmer":' + JSON.stringify(result) + '}';
+    //console.log(jsonData)
+			var jsonObj = JSON.parse(jsonData);
+      //console.log(jsonObj)
+      //console.log(JSON.stringify(jsonObj))
+			var jsonContent = "current_farmer = '[" + JSON.stringify(jsonObj) +"]'";
+			fs.writeFile("views/current_farmer.json", jsonContent, 'utf8', function (err) {
+				if (err) {
+				console.log("An error occured while writing JSON Object to File.");
+				return console.log(err);
+			}
     });
     });
+		//}
+    console.log("error");
+	res.sendFile("views/farmer_auction_current.html",{root:__dirname});
+//});
+});
+
+
+
+
+
+
+
+var dic_farmer_enrolled={}
+//console.log("firs[t[[[[[[]]]]]]]")
+console.log(dic_farmer_enrolled)
+app.post("/farmer_crop_select_enrolled",function(req,res){
+var name = req.body.crop_name;
+  Auction.find( { $and : [ {$or:[{flag:"-1"},{flag:"0"}]},{crop_name:name},{farmer_user_name:req.cookies.farmer_user_name}]} ).then((doc)=>{
+//Auction.find(  {$and:[{flag:"-1" }]}).then((doc)=>{
+console.log(doc);
+  dic_farmer_enrolled[req.cookies.farmer_user_name] = doc;
+  var result=dic_farmer_enrolled
+  console.log(dic_farmer_enrolled);
+
+    console.log(jsonData)
+    var jsonData = '{"farmer_enrolled":' + JSON.stringify(result) + '}';
+			var jsonObj = JSON.parse(jsonData);
+      //console.log(jsonObj)
+      //console.log(JSON.stringify(jsonObj))
+			var jsonContent = "farmer_enrolled = '[" + JSON.stringify(jsonObj) +"]'";
+			fs.writeFile("views/farmer_enrolled.json", jsonContent, 'utf8', function (err) {
+				if (err) {
+				console.log("An error occured while writing JSON Object to File.");
+				return console.log(err);
+			}
+    });
+ });
+
+	res.sendFile("views/farmer_auction_enrolled.html",{root:__dirname});
+//});
+});
+
+
+
+
+
+
+app.post("/send_farmer_auction_enrolled_page",function(req,res){
+res.sendFile("views/farmer_auction_enrolled.html",{root:__dirname});
+})
+
+
+
+
+
+
+
+
+
+
+var dic_farmer_result={}
+//console.log("firs[t[[[[[[]]]]]]]")
+console.log(dic_farmer_result)
+app.post("/farmer_crop_select_result",function(req,res){
+var name = req.body.crop_name;
+  Auction.find({ $and : [ {flag:"1"},{crop_name:name} ,{ farmer_user_name : req.cookies.farmer_user_name}]}).sort({end_date:-1}).then((doc)=>{
+//Auction.find(  {$and:[{flag:"-1" }]}).then((doc)=>{
+console.log(doc);
+  dic_farmer_result[req.cookies.farmer_user_name] = doc;
+  var result=dic_farmer_result
+  console.log(dic_farmer_result);
+
+    console.log(jsonData)
+    var jsonData = '{"farmer_result":' + JSON.stringify(result) + '}';
+			var jsonObj = JSON.parse(jsonData);
+      //console.log(jsonObj)
+      //console.log(JSON.stringify(jsonObj))
+			var jsonContent = "farmer_result = '[" + JSON.stringify(jsonObj) +"]'";
+			fs.writeFile("views/farmer_result.json", jsonContent, 'utf8', function (err) {
+				if (err) {
+				console.log("An error occured while writing JSON Object to File.");
+				return console.log(err);
+			}
+    });
+ });
+
+	res.sendFile("views/farmer_auction_result.html",{root:__dirname});
+//});
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+app.post("/send_farmer_auction_result_page",function(req,res){
 res.sendFile("views/farmer_auction_result.html",{root:__dirname});
 })
 
@@ -236,13 +439,20 @@ app.post("/store_vendor_sign_up",function(req,res){
 	token:token
   });
 
-  vendor.save();
+  vendor.save(function(err){
+  if(err){
+    console.log("error");
+    res.cookie('vendor_exist',"yes");
+     res.sendFile("views/vendor_sign_up.html",{root:__dirname});
 
 
-        res.cookie('vendor_user_name',req.body.anum);
-				res.sendFile("views/vendor_dashboard.html",{root:__dirname});
-
-})
+  }
+  else{
+    res.cookie('vendor_user_name',req.body.anum);
+    res.sendFile("views/vendor_dashboard.html",{root:__dirname});
+  }
+  });
+  });
 
 
 
@@ -265,7 +475,6 @@ Crop.find().then((doc)=>{
         }
     });
     });
-	console.log(req.body.tp);
 	res.sendFile("views/vendor_auction_takepart.html",{root:__dirname});
 })
 
@@ -296,46 +505,31 @@ var name = req.body.crop_name;
     });
 		//}
     console.log("error");
-
 	res.sendFile("views/vendor_auction_takepart.html",{root:__dirname});
 //});
 });
 
 
 
+
+
+
 var enrolled={}
 app.post("/vendor_interested_auction",function(req,res){
+
 var auction_id=req.body.auction_id;
 var o_id=new ObjectId(auction_id);
 var obj={
-	"User_name":req.cookies.vendor_user_name,
-	"Price":"0"
+  "User_name":req.cookies.vendor_user_name,
+  "Price":"0",
+  "isWinner":"0"
 };
 Auction.findOneAndUpdate({_id:o_id}, {$push: {Vendors:obj}},function(err,model){ console.log(err);
-// x = enrolled[req.cookies.vendor_user_name];
-// if(x == undefined)
-// {
-//   enrolled[req.cookies.vendor_user_name] = [model];
-// }else{
-//   enrolled[req.cookies.vendor_user_name].push(model);
-// }
-// console.log("dic")
-// console.log(enrolled)
-// var result = enrolled;
-// var jsonData = '{"enrolled":' + JSON.stringify(result) + '}';
-// // parse json
-// var jsonObj = JSON.parse(jsonData);
-// // stringify JSON Object
-// var jsonContent = "enrolled = '[" + JSON.stringify(jsonObj) +"]'";
-// fs.writeFile("views/enrolled.json", jsonContent, 'utf8', function (err) {
-//   if (err) {
-//   console.log("An error occured while writing JSON Object to File.");
-//   return console.log(err);
-// }
-// });
+
 });
 res.sendFile("views/vendor_auction_takepart.html",{root:__dirname});
 })
+
 
 
 
@@ -356,13 +550,81 @@ res.sendFile("views/vendor_auction_current.html",{root:__dirname});
 
 
 
+var dic_vendor_current={}
+//console.log("firs[t[[[[[[]]]]]]]")
+console.log(dic_vendor_current)
+app.post("/vendor_crop_select_current",function(req,res){
+var name = req.body.crop_name;
+  Auction.find({ $and : [ {flag:"0"},{crop_name:name} ,{ Vendors : { $elemMatch :{ User_name : req.cookies.vendor_user_name }}}]}).then((doc)=>{
+  dic_vendor_current[req.cookies.vendor_user_name] = doc;
+  var result=dic_vendor_current
+
+		var jsonData = '{"current_vendor":' + JSON.stringify(result) + '}';
+    //console.log(jsonData)
+			var jsonObj = JSON.parse(jsonData);
+      //console.log(jsonObj)
+      //console.log(JSON.stringify(jsonObj))
+			var jsonContent = "current_vendor = '[" + JSON.stringify(jsonObj) +"]'";
+			fs.writeFile("views/current_vendor.json", jsonContent, 'utf8', function (err) {
+				if (err) {
+				console.log("An error occured while writing JSON Object to File.");
+				return console.log(err);
+			}
+    });
+    });
+	res.sendFile("views/vendor_auction_current.html",{root:__dirname});
+//});
+});
+
+
+
+
+
+
+
+
+app.post("/vendor_auction_bid_price",function(req,res){
+  var auction_id=req.body.auction_id;
+  var o_id=new ObjectId(auction_id);
+
+
+  Auction.findOneAndUpdate({ $and : [ {_id:o_id} ,
+                                    { Vendors : { $elemMatch :{ User_name : req.cookies.vendor_user_name }}},
+                                    { "result.Price" : {$lt: req.body.vendor_bid_price}  }]},{$set:{"Vendors.$.Price":req.body.vendor_bid_price, "result.User_name": req.cookies.vendor_user_name ,"result.Price":req.body.vendor_bid_price} },
+                                    {new:true},function(err,model){
+
+dic_vendor_current[req.cookies.vendor_user_name] = [model];
+  var jsonData = '{"current_vendor":' + JSON.stringify(dic_vendor_current) + '}';
+  //console.log(jsonData)
+    var jsonObj = JSON.parse(jsonData);
+    //console.log(jsonObj)
+    //console.log(JSON.stringify(jsonObj))
+    var jsonContent = "current_vendor = '[" + JSON.stringify(jsonObj) +"]'";
+    fs.writeFile("views/current_vendor.json", jsonContent, 'utf8', function (err) {
+      if (err) {
+      console.log("An error occured while writing JSON Object to File.");
+      return console.log(err);
+    }
+  });
+});
+  res.sendFile("views/vendor_auction_current.html",{root:__dirname});
+})
+
+
+
+
+
+
+
+
+
 var dic_enrolled={}
 //console.log("firs[t[[[[[[]]]]]]]")
 console.log(dic_enrolled)
 app.post("/vendor_crop_select_enrolled",function(req,res){
 var name = req.body.crop_name;
-  Auction.find( { $and : [ {crop_name:name} ,{ Vendors : { $elemMatch :{ User_name : req.cookies.vendor_user_name }}}]} ).then((doc)=>{
-
+  Auction.find( { $and : [ {$or:[{flag:"-1"},{flag:"0"}]},{crop_name:name} ,{ Vendors : { $elemMatch :{ User_name : req.cookies.vendor_user_name }}}]} ).then((doc)=>{
+//Auction.find(  {$and:[{flag:"-1" }]}).then((doc)=>{
 console.log(doc);
   dic_enrolled[req.cookies.vendor_user_name] = doc;
   var result=dic_enrolled
@@ -423,6 +685,59 @@ res.sendFile("views/vendor_auction_result.html",{root:__dirname})
 
 
 
+
+
+
+
+
+
+
+
+
+var dic_vendor_result={}
+//console.log("firs[t[[[[[[]]]]]]]")
+console.log(dic_vendor_result)
+app.post("/vendor_crop_select_result",function(req,res){
+var name = req.body.crop_name;
+  Auction.find({ $and : [ {flag:"1"},{crop_name:name} ,{ Vendors : { $elemMatch :{ User_name : req.cookies.vendor_user_name }}}]}).then((doc)=>{
+//Auction.find(  {$and:[{flag:"-1" }]}).then((doc)=>{
+console.log(doc);
+  dic_vendor_result[req.cookies.vendor_user_name] = doc;
+  var result=dic_vendor_result
+  console.log(dic_vendor_result);
+
+    console.log(jsonData)
+    var jsonData = '{"vendor_result":' + JSON.stringify(result) + '}';
+			var jsonObj = JSON.parse(jsonData);
+      //console.log(jsonObj)
+      //console.log(JSON.stringify(jsonObj))
+			var jsonContent = "vendor_result = '[" + JSON.stringify(jsonObj) +"]'";
+			fs.writeFile("views/vendor_result.json", jsonContent, 'utf8', function (err) {
+				if (err) {
+				console.log("An error occured while writing JSON Object to File.");
+				return console.log(err);
+			}
+    });
+ });
+
+	res.sendFile("views/vendor_auction_result.html",{root:__dirname});
+//});
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 app.get("/vendor_dashboard",function(req,res){
 res.sendFile("views/vendor_dashboard.html",{root:__dirname});
 });
@@ -442,10 +757,6 @@ res.clearCookie('vendor_user_name');
 })
 
 
-
-
-
-
-app.listen(port,()=>{
+server.listen(port,()=>{
 console.log("server is on at port 3000");
 })

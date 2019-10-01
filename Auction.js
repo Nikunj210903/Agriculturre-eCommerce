@@ -31,8 +31,20 @@ var Auction = mongoose.model('Auction', {
   },
   Vendors:[{
 	User_name:String,
-	Price : String,
-  }]
+	Price : Number,
+  isWinner: String,
+}],
+flag:{
+  type:String,
+},
+result:{
+    User_name:{
+      type:String,
+    },
+    Price:{
+      type:Number,
+    }
+    }
 });
 
 

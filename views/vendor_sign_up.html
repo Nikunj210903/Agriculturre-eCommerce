@@ -27,7 +27,7 @@
   <!-- Google Font -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
 </head>
-<body class="hold-transition login-page">
+<body class="hold-transition login-page" onLoad="fun()">
 	<div class="login-box">
 		<div class="login-logo">
 			<b>Vendor</b>Signup
@@ -127,6 +127,40 @@
 	<script src="/js/bootstrap.min.js"></script>
 	<!-- iCheck -->
 	<script src="/js/icheck.min.js"></script>
+  <script>
+  function createCookie(name,value,days) {
+    if (days) {
+      var date = new Date();
+      date.setTime(date.getTime()+(days*24*60*60*1000));
+      var expires = "; expires="+date.toGMTString();
+    }
+    else var expires = "";
+    document.cookie = name+"="+value+expires+"; path=/";
+  }
+
+  function readCookie(name) {
+    var nameEQ = name + "=";
+    var ca = document.cookie.split(';');
+    for(var i=0;i < ca.length;i++) {
+      var c = ca[i];
+      while (c.charAt(0)==' ') c = c.substring(1,c.length);
+      if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+    }
+    return null;
+  }
+
+  function eraseCookie(name) {
+    createCookie(name,"",-1);
+  }
+  function fun(){
+  if(readCookie("vendor_exist"))
+  {
+  alert("This Username Already Exists")
+  eraseCookie("vendor_exist")
+  }
+  }
+  </script>
+
 	<script>
 		$(function () {
 			$('input').iCheck({
